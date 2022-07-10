@@ -25,10 +25,16 @@ x86 / AMD64
 System V
 - [System V Specification](https://www.intel.com/content/dam/develop/external/us/en/documents/mpx-linux64-abi.pdf)
 - [ELF](https://man7.org/linux/man-pages/man5/elf.5.html)
+- [elf.h](https://github.com/torvalds/linux/blob/master/include/uapi/linux/elf.h)
 
 Linux
 - [Linux System calls](https://man7.org/linux/man-pages/man2/syscall.2.html)
 - [Linux System call Table](https://filippo.io/linux-syscall-table/)
+
+Relocation
+- System V ABI Specification
+- https://docs.oracle.com/cd/E19683-01/817-3677/chapter6-46512/index.html
+- https://newbedev.com/what-do-r-x86-64-32s-and-r-x86-64-64-relocation-mean 
 
 Tools
 - [NASM manual](https://www.nasm.us/doc/nasmdoc4.html)

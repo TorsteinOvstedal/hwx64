@@ -1,5 +1,7 @@
-hello: hello.o
-	ld $< -o $@
+hello: hello.asm
+	nasm -f bin hello.asm -o hello
+	chmod +x hello
+	@# ld $< -o $@
 
 %.o:%.asm
 	nasm -f elf64 $< -o $@
