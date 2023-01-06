@@ -1,20 +1,14 @@
 # Hello x64
 
-Hello World implemented in x86-64 *machine code* for Linux.
+"Hello World" implemented in x86-64 *machine code* for Linux.
 
-The goal of this project is to explore *x86-64* (instruction encoding), 
-*System V* and the different parts of an *executable binary*.
+Goal: Explore *x86-64* (instruction encoding), 
+*System V* & *executables*.
 
 ## Build
 ```
 make hello
 ```
-
-## Rules
-- Can use labels for addresses.
-- Can use macros for immediate operands.
-- The resulting binary does not need to be optimal.
-- The resulting binary does not need to be position independent.
 
 ## Resources
 x86 / AMD64
