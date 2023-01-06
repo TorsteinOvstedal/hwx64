@@ -3,9 +3,6 @@ hello: hello.asm
 	chmod +x hello
 	@# ld $< -o $@
 
-%.o:%.asm
-	nasm -f elf64 $< -o $@
-
 .PHONY: gen_info
 
 gen_info: hello
