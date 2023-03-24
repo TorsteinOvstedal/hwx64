@@ -1,14 +1,18 @@
 ; Platform: x86-64, Linux.
 ; No-PIE.
 
-; Linux Syscall table
+
+; Virtual address space start
+%define V_ADDR 0x40000
+
+; Linux syscall table
 %define SYS_WRITE 1
 %define SYS_EXIT  60
 
-; Unix file descriptors
+; UNIX file descriptors
 %define STDOUT 1
 
-; Unix exit codes
+; UNIX exit codes
 %define EXIT_SUCCESS 0
 
 ; ASCII table
@@ -16,23 +20,24 @@
 %define LF   10
 %define CR   13
 
-%define V_ADDR 0x40000
+
+; Executable header
 
 elf_header:
-    db 0x7F, "ELF"          ; e_ident[EI_MAG0, EI_MAG3]
-    db 0x01                 ; e_ident[EI_CLASS]      = 64bit
-    db 0x01                 ; e_ident[EI_DATA]       = Little Endian
-    db 0x01                 ; e_ident[EI_VERSION]    = Current ELF version
-    db 0x00                 ; e_ident[EI_OSABI]      = System V
-    db 0x00                 ; e_ident[EI_ABIVERSION] = Undefined, i.e. padding
+    db 0x7F, "ELF"          ; e_ident[EI_MAG0:EI_MAG3]
+    db 0x01                 ; e_ident[EI_CLASS]
+    db 0x01                 ; e_ident[EI_DATA]
+    db 0x01                 ; e_ident[EI_VERSION]
+    db 0x00                 ; e_ident[EI_OSABI]
+    db 0x00                 ; e_ident[EI_ABIVERSION]
     db 0,0,0,0,0,0,0        ; e_ident[EI_PAD]
-    dw 0x02                 ; e_type                 = EXEC
-    dw 0x3E                 ; e_machine              = x64
-    dd 0x01                 ; e_version              = Current version
-    dq _start + V_ADDR      ; e_entry
+    dw 0x02                 ; e_type
+    dw 0x3E                 ; e_machine
+    dd 0x01                 ; e_version
+    dq V_ADDR + _start      ; e_entry
     dq elf_program_header   ; e_phoff
     dq 0x00                 ; e_shoff
-    dd 0x00                 ; e_flags                = Undefined.
+    dd 0x00                 ; e_flags
     dw 0x40                 ; e_ehsize
     dw 0x38                 ; e_phentsize
     dw 0x01                 ; e_phnum
@@ -41,8 +46,8 @@ elf_header:
     dw 0x00                 ; e_shstrndx
 
 elf_program_header:
-    dd 0x01                 ; p_type  = Loadable
-    dd 0x4 | 0x1            ; p_flags = Readable | Executable
+    dd 0x01                 ; p_type
+    dd 0x4 | 0x1            ; p_flags
     dq 0                    ; p_offset
     dq V_ADDR               ; p_vaddr
     dq V_ADDR               ; p_paddr
@@ -50,28 +55,10 @@ elf_program_header:
     dq file_size            ; p_memsz
     dq 0x1000               ; p_align
 
-; Dont have any 
-; - Section headers, 
-; - Relocation information
-; - Symbol table
-; - String table
-; - ...
-
-; elf_section_header:
-;     dd 0x00 ; sh_name
-;     dd 0x00 ; sh_type
-;     dq 0x00 ; sh_flags
-;     dq 0x00 ; sh_addr
-;     dq 0x00 ; sh_offset
-;     dq 0x00 ; sh_size
-;     dw 0x00 ; sh_link
-;     dw 0x00 ; sh_info
-;     dq 0x00 ; sh_addralign
-;     dq 0x00 ; sh_entsize
+; NOTE: No section header, relocation information, symbol table, string table, ...
 
 
-; section .text
-; global _start
+; text section
 
 _start:
     ; Write msg to stdout
@@ -90,14 +77,14 @@ _start:
     db 0x8D             ; lea
     db 0b00110100       ; ModR/M: rsi, SIB follows.	
     db 0b00100101       ; SIB: no index, disp32 with no base.
-    dd msg + V_ADDR
+    dd V_ADDR + msg
 
     ; MOV r64, r/m64.	
     db 0b01001000       ; REX.W
     db 0x8B             ; mov
     db 0b00010100       ; ModR/M: rdx, SIB follows.
     db 0b00100101       ; SIB: no index, disp32 with no base.
-    dd msg.length + V_ADDR
+    dd V_ADDR + msg.length
     
     dw 0x050f           ; syscall
 
@@ -121,10 +108,13 @@ _start:
     dw 0x050f           ; syscall
 
 
-; section .data
+; data section
 
 msg:
     .buffer: db "Hello World!", CR, LF
     .length: dd $ - msg.buffer
+
+
+; EOF metadata 
 
 file_size: equ $ - $$
