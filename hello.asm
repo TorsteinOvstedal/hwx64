@@ -21,7 +21,7 @@
 %define CR   13
 
 
-; Executable header
+; ELF header
 
 elf_header:
     db 0x7F, "ELF"          ; e_ident[EI_MAG0:EI_MAG3]
